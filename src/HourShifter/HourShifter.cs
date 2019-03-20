@@ -56,19 +56,19 @@ namespace HourShifter
 
             foreach( string path in allPaths )
             {
+                // See if the file is an image
                 try
                 {
-                    // See if the file is an image
-                    try
-                    {
-                        using( Image image = Image.FromFile( path ) ) { }
-                    }
-                    catch
-                    {
-                        LoggingContext.Current.Debug( $"This file doesn't seem to be an image: {path}" );
-                        continue;
-                    }
-
+                    using( Image image = Image.FromFile( path ) ) { }
+                }
+                catch
+                {
+                    LoggingContext.Current.Debug( $"This file doesn't seem to be an image: {path}" );
+                    continue;
+                }
+                
+                try
+                {
                     byte[] originalImageBytes = File.ReadAllBytes( path );
                     using( MemoryStream memoryStream = new MemoryStream( originalImageBytes ) )
                     using( Image image = Image.FromStream( memoryStream, false, false ) )

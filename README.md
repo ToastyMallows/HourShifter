@@ -4,11 +4,14 @@ Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of i
 
 ## Compiling
 
-* Pull down repo
-* Open .sln in Visual Studio 2017 or later
-* Build
-  * This will build the utility and the test project
-* Run HourShifter.exe from .\bin folder
+Currently targeting .NET Core 2.1.
+
+* `> dotnet build .\HourShifter.sln`
+* `> dotnet test .\HourShifter.sln`
+* `> dotnet .\src\HourShifter\bin\netcoreapp2.1\HourShifter.dll --help`
+* `> dotnet publish -c Release -r win-x64`
+
+Note:  See list of runtime identifiers (RIDs) to replace `win-x64` here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog 
 
 ## Command-line Arguments
 

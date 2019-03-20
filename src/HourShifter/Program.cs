@@ -6,42 +6,47 @@ namespace HourShifter
 {
     internal class Program
     {
-        static int Main( string[] args )
+        static int Main(string[] args)
         {
             int exitCode = Constants.SUCCESS_EXIT_CODE;
 
-            Parser.Default.ParseArguments<Options>( args )
-                .WithParsed( ( options ) =>
-                    {
-                        int? hoursToShift = options.Hours;
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed((options) =>
+                   {
+                       if (Enum.TryParse(options.LogLevel, out LogLevel logLevel))
+                       {
+                           LoggingContext.Current.SetLogLevel(logLevel);
+                       }
 
-                        if( hoursToShift == null || hoursToShift == 0 )
-                        {
-                            LoggingContext.Current.Debug( $"Using the default number of hours ({Constants.DEFAULT_HOURS})" );
-                            hoursToShift = Constants.DEFAULT_HOURS;
-                        }
+                       int? hoursToShift = options.Hours;
+
+                       if (hoursToShift == null || hoursToShift == 0)
+                       {
+                           LoggingContext.Current.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
+                           hoursToShift = Constants.DEFAULT_HOURS;
+                       }
 
                         // Composition root
                         string currentDirectory = Directory.GetCurrentDirectory();
-                        LoggingContext.Current.Debug( $"The current working directory is {currentDirectory}." );
+                       LoggingContext.Current.Debug($"The current working directory is {currentDirectory}.");
 
-                        FileLoader fileLoader = new FileLoader( currentDirectory, options.CurrentDirectoryOnly );
-                        HourShifter hourShifter = new HourShifter( hoursToShift.Value, fileLoader );
-                        ProgramBootstrap bootstrap = new ProgramBootstrap( hourShifter );
+                       FileLoader fileLoader = new FileLoader(currentDirectory, options.CurrentDirectoryOnly);
+                       HourShifter hourShifter = new HourShifter(hoursToShift.Value, fileLoader);
+                       ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter);
 
-                        exitCode = bootstrap.Run();
-                        LoggingContext.Current.Debug( $"Returning exit code {exitCode}." );
+                       exitCode = bootstrap.Run();
+                       LoggingContext.Current.Debug($"Returning exit code {exitCode}.");
 
-                        Console.Write( "Press any key to exit..." );
-                        Console.ReadKey();
-                    } )
-                .WithNotParsed( ( errors ) =>
-                    {
-                        LoggingContext.Current.Debug( $"One or more errors occurred when parsing the command line parameters." );
-                        LoggingContext.Current.Debug( string.Empty );
+                       Console.Write("Press any key to exit...");
+                       Console.ReadKey();
+                   })
+                .WithNotParsed((errors) =>
+                   {
+                       LoggingContext.Current.Debug($"One or more errors occurred when parsing the command line parameters.");
+                       LoggingContext.Current.Debug(string.Empty);
 
-                        exitCode = Constants.FAILURE_EXIT_CODE;
-                    } );
+                       exitCode = Constants.FAILURE_EXIT_CODE;
+                   });
 
             return exitCode;
         }
@@ -51,9 +56,9 @@ namespace HourShifter
     {
         private readonly HourShifter _hourShifter;
 
-        public ProgramBootstrap( HourShifter hourShifter )
+        public ProgramBootstrap(HourShifter hourShifter)
         {
-            Guard.AgainstNull( hourShifter, nameof( hourShifter ) );
+            Guard.AgainstNull(hourShifter, nameof(hourShifter));
 
             _hourShifter = hourShifter;
         }
@@ -64,10 +69,10 @@ namespace HourShifter
             {
                 _hourShifter.Shift();
             }
-            catch( Exception e )
+            catch (Exception e)
             {
-                LoggingContext.Current.Error( e.ToString() );
-                LoggingContext.Current.Error( string.Empty );
+                LoggingContext.Current.Error(e.ToString());
+                LoggingContext.Current.Error(string.Empty);
                 return Constants.FAILURE_EXIT_CODE;
             }
 
