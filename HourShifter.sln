@@ -1,31 +1,56 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2036
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HourShifter", "HourShifter\HourShifter.csproj", "{E1226583-5338-4773-AA80-DAADE414A013}"
+VisualStudioVersion = 15.0.26124.0
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{E3513037-D5DB-4A2C-8B83-DE52CF7CFDA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HourShifterTest", "HourShifterTest\HourShifterTest.csproj", "{45655D83-57FA-4749-AC80-5275B1B892DD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HourShifter", "src\HourShifter\HourShifter.csproj", "{A2D49F2C-564B-47CF-9839-6FDB71A28139}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{DE340891-C9A6-4BC7-AC79-DDDEBBCABD82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HourShifterTests", "test\HourShifterTests\HourShifterTests.csproj", "{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E1226583-5338-4773-AA80-DAADE414A013}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E1226583-5338-4773-AA80-DAADE414A013}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E1226583-5338-4773-AA80-DAADE414A013}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E1226583-5338-4773-AA80-DAADE414A013}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45655D83-57FA-4749-AC80-5275B1B892DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45655D83-57FA-4749-AC80-5275B1B892DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45655D83-57FA-4749-AC80-5275B1B892DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45655D83-57FA-4749-AC80-5275B1B892DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FA8D14C1-6501-4D2B-A4E3-64D601DA6CEB}
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|x64.Build.0 = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Debug|x86.Build.0 = Debug|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|x64.ActiveCfg = Release|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|x64.Build.0 = Release|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139}.Release|x86.Build.0 = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|x64.Build.0 = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Debug|x86.Build.0 = Debug|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|x64.ActiveCfg = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|x64.Build.0 = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|x86.ActiveCfg = Release|Any CPU
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A2D49F2C-564B-47CF-9839-6FDB71A28139} = {E3513037-D5DB-4A2C-8B83-DE52CF7CFDA6}
+		{A14DF963-B416-4B1A-B79D-9A80CFADE5FD} = {DE340891-C9A6-4BC7-AC79-DDDEBBCABD82}
 	EndGlobalSection
 EndGlobal

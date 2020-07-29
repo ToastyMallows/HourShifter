@@ -1,5 +1,4 @@
-﻿using HourShifter;
-using log4net;
+using HourShifter;
 using Moq;
 using NUnit.Framework;
 
@@ -25,23 +24,8 @@ namespace HourShifterTest
         [Description("Tests that you cannot set null to the LoggingContext")]
         public void LoggingContext_CannotSetNull()
         {
-            ILog logger = null;
+            ILogger logger = null;
             Assert.That( () => { LoggingContext.Current = logger; }, Throws.ArgumentNullException );
-        }
-
-        [Test]
-        [Description("Tests that ResetToDefault resets to the default logger")]
-        public void LoggingContext_ResetToDefault_ResetsToDefaultLogger()
-        {
-            Mock<ILog> mockLogger = new Mock<ILog>();
-            mockLogger.SetupGet( m => m.IsInfoEnabled ).Returns( false );
-            LoggingContext.Current = mockLogger.Object;
-
-            bool isInfoEnabled = LoggingContext.Current.IsInfoEnabled;
-            LoggingContext.ResetToDefault();
-            isInfoEnabled = LoggingContext.Current.IsInfoEnabled;
-
-            mockLogger.Verify( m => m.IsInfoEnabled, Times.Once );
         }
     }
 }
