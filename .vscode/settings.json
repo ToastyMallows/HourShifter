@@ -1,0 +1,7 @@
+{
+	"editor.formatOnPaste": true,
+	"editor.formatOnSave": true,
+	"telemetry.enableTelemetry": false,
+	"gitlens.advanced.telemetry.enabled": false,
+	"docker-explorer.enableTelemetry": false,
+}

@@ -1,7 +1,7 @@
 {
-    "recommendations": [
-        "ms-vscode.csharp",
-        "k--kato.docomment",
-        "fudge.auto-using"
-    ]
+	"recommendations": [
+		"ms-vscode.csharp",
+		"k--kato.docomment",
+		"fudge.auto-using"
+	]
 }

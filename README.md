@@ -4,25 +4,31 @@ Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of i
 
 ## Compiling
 
-Currently targeting .NET Core 2.1.
+Currently targeting .NET Core 3.1.
 
-* `> dotnet build .\HourShifter.sln`
-* `> dotnet test .\HourShifter.sln`
-* `> dotnet .\src\HourShifter\bin\netcoreapp2.1\HourShifter.dll --help`
+* `> dotnet build`
+* `> dotnet test`
+* `> dotnet .\src\HourShifter\bin\netcoreapp3.1\HourShifter.dll --help`
 * `> dotnet publish -c Release -r win-x64`
 
 Note:  See list of runtime identifiers (RIDs) to replace `win-x64` here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog 
 
 ## Command-line Arguments
 
-* -h (hours)
+* -h, --hours
   * Will shift all image DateTaken EXIF metadata found in the current directory and all subdirectories by a number of hours.  The default value is 12.
   * Ex:
     * -h 5
     * -h -2
 
-* -c
+* -c, --currentDirectoryOnly
   * Flag for only searching the current directory, NOT subdirectories.  The default is false (subdirectories WILL be searched.)
+
+* -l, --logLevel
+  * Flag to control the log level of the application.  Default: Info.  Acceptable values: Debug, Info, Warn, Error
+
+* -q, --quiet
+  * Flag for showing any output or waiting to press any key to exit.  Program will run and exit immediately without any output.  Log level is ignored.
   
 * --help
   * Displays help screen.

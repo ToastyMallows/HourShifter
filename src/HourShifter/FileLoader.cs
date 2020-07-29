@@ -3,35 +3,43 @@ using System.IO;
 
 namespace HourShifter
 {
-    internal class FileLoader
-    {
-        private const string ALL_FILES_WILDCARD = "*";
-        private readonly string _currentDirectory;
-        private readonly bool _currentDirectoryOnly;
+	internal class FileLoader
+	{
+		private const string ALL_FILES_WILDCARD = "*";
+		private readonly string _currentDirectory;
+		private readonly bool _currentDirectoryOnly;
 
-        public FileLoader( string currentDirectory, bool currentDirectoryOnly )
-        {
-            Guard.AgainstNullOrWhitespace( currentDirectory, nameof( currentDirectory ) );
+		public FileLoader(string currentDirectory, bool currentDirectoryOnly)
+		{
+			Guard.AgainstNullOrWhitespace(currentDirectory, nameof(currentDirectory));
 
-            _currentDirectory = currentDirectory;
-            _currentDirectoryOnly = currentDirectoryOnly;
+			_currentDirectory = currentDirectory;
+			_currentDirectoryOnly = currentDirectoryOnly;
 
-            LoggingContext.Current.Debug( $"{nameof( FileLoader )} created with current directory of {_currentDirectory}, search current directories only: {currentDirectoryOnly}" );
-        }
+			LoggingContext.Current.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {currentDirectoryOnly}");
+		}
 
-        public IEnumerable<string> AllPaths
-        {
-            get
-            {
-                SearchOption searchOption = SearchOption.AllDirectories;
+		public bool CurrentDirectoryOnly
+		{
+			get
+			{
+				return _currentDirectoryOnly;
+			}
+		}
 
-                if( _currentDirectoryOnly )
-                {
-                    searchOption = SearchOption.TopDirectoryOnly;
-                }
+		public IEnumerable<string> AllPaths
+		{
+			get
+			{
+				SearchOption searchOption = SearchOption.AllDirectories;
 
-                return Directory.EnumerateFiles( _currentDirectory, ALL_FILES_WILDCARD, searchOption );
-            }
-        }
-    }
+				if (_currentDirectoryOnly)
+				{
+					searchOption = SearchOption.TopDirectoryOnly;
+				}
+
+				return Directory.EnumerateFiles(_currentDirectory, ALL_FILES_WILDCARD, searchOption);
+			}
+		}
+	}
 }

@@ -1,89 +1,103 @@
 ﻿using CommandLine;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace HourShifter
 {
-    internal class Program
-    {
-        static int Main(string[] args)
-        {
-            int exitCode = Constants.SUCCESS_EXIT_CODE;
+	internal class Program
+	{
+		static async Task<int> Main(string[] args)
+		{
+			int exitCode = Constants.SUCCESS_EXIT_CODE;
 
-            Parser.Default.ParseArguments<Options>(args)
-                .WithParsed((options) =>
-                   {
-                       if (Enum.TryParse(options.LogLevel, out LogLevel logLevel))
-                       {
-                           LoggingContext.Current.SetLogLevel(logLevel);
-                       }
+			ParserResult<Options> parserResult = Parser.Default.ParseArguments<Options>(args);
 
-                       int? hoursToShift = options.Hours;
+			parserResult
+				.WithNotParsed((errors) =>
+				{
+					exitCode = Constants.FAILURE_EXIT_CODE;
+				});
 
-                       if (hoursToShift == null || hoursToShift == 0)
-                       {
-                           LoggingContext.Current.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
-                           hoursToShift = Constants.DEFAULT_HOURS;
-                       }
+			await parserResult
+				.WithParsedAsync(async (options) =>
+				{
+					if (!options.Quiet)
+					{
+						if (Enum.TryParse(options.LogLevel, out LogLevel logLevel))
+						{
+							LoggingContext.Current.SetLogLevel(logLevel);
+						}
+					}
+					else
+					{
+						LoggingContext.Current.SetLogLevel(LogLevel.Silent);
+					}
 
-                        // Composition root
-                        string currentDirectory = Directory.GetCurrentDirectory();
-                       LoggingContext.Current.Debug($"The current working directory is {currentDirectory}.");
+					int? hoursToShift = options.Hours;
 
-                       FileLoader fileLoader = new FileLoader(currentDirectory, options.CurrentDirectoryOnly);
-                       HourShifter hourShifter = new HourShifter(hoursToShift.Value, fileLoader);
-                       ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter);
+					if (hoursToShift == null || hoursToShift == 0)
+					{
+						LoggingContext.Current.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
+						hoursToShift = Constants.DEFAULT_HOURS;
+					}
 
-                       exitCode = bootstrap.Run();
-                       LoggingContext.Current.Debug($"Returning exit code {exitCode}.");
+					// Composition root
+					string currentDirectory = Directory.GetCurrentDirectory();
+					LoggingContext.Current.Debug($"The current working directory is {currentDirectory}.");
 
-                       Console.Write("Press any key to exit...");
-                       Console.ReadKey();
-                   })
-                .WithNotParsed((errors) =>
-                   {
-                       LoggingContext.Current.Debug($"One or more errors occurred when parsing the command line parameters.");
-                       LoggingContext.Current.Debug(string.Empty);
+					FileLoader fileLoader = new FileLoader(currentDirectory, options.CurrentDirectoryOnly);
+					HourShifter hourShifter = new HourShifter(hoursToShift.Value, fileLoader);
+					ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter);
 
-                       exitCode = Constants.FAILURE_EXIT_CODE;
-                   });
+					exitCode = await bootstrap.Run();
+					LoggingContext.Current.Debug($"Returning exit code {exitCode}.");
 
-            return exitCode;
-        }
-    }
+					if (!options.Quiet)
+					{
+						Console.Write("Press any key to exit...");
+						Console.ReadKey();
+					}
+				});
 
-    internal class ProgramBootstrap
-    {
-        private readonly HourShifter _hourShifter;
+			LoggingContext.Current.Debug($"Returning exit code: {exitCode}");
+			return exitCode;
+		}
+	}
 
-        public ProgramBootstrap(HourShifter hourShifter)
-        {
-            Guard.AgainstNull(hourShifter, nameof(hourShifter));
+	internal class ProgramBootstrap
+	{
+		private readonly HourShifter _hourShifter;
 
-            _hourShifter = hourShifter;
-        }
+		public ProgramBootstrap(HourShifter hourShifter)
+		{
+			Guard.AgainstNull(hourShifter, nameof(hourShifter));
 
-        public int Run()
-        {
-            try
-            {
-                _hourShifter.Shift();
-            }
-            catch (Exception e)
-            {
-                LoggingContext.Current.Error(e.ToString());
-                LoggingContext.Current.Error(string.Empty);
-                return Constants.FAILURE_EXIT_CODE;
-            }
+			_hourShifter = hourShifter;
+		}
 
-            return Constants.SUCCESS_EXIT_CODE;
-        }
-    }
+		public async Task<int> Run()
+		{
+			try
+			{
+				int filesShifted = await _hourShifter.Shift();
 
-    internal static class Constants
-    {
-        public static int SUCCESS_EXIT_CODE = 0;
-        public static int FAILURE_EXIT_CODE = 1;
-        public static int DEFAULT_HOURS = 12;
-    }
+				LoggingContext.Current.Info($"Shifted {filesShifted} files.{Environment.NewLine}");
+			}
+			catch (Exception e)
+			{
+				LoggingContext.Current.Error($"{e.ToString()}{Environment.NewLine}");
+				return Constants.FAILURE_EXIT_CODE;
+			}
+
+			return Constants.SUCCESS_EXIT_CODE;
+		}
+	}
+
+	internal static class Constants
+	{
+		public static int SUCCESS_EXIT_CODE = 0;
+		public static int FAILURE_EXIT_CODE = 1;
+		public static int DEFAULT_HOURS = 12;
+	}
 }

@@ -1,97 +1,99 @@
 using System;
 namespace HourShifter
 {
-    public enum LogLevel
-    {
-        Debug,
-        Info,
-        Warn,
-        Error
-    }
+	public enum LogLevel
+	{
+		Debug,
+		Info,
+		Warn,
+		Error,
+		Silent
+	}
 
-    public interface ILogger
-    {
-        void Debug(string logMessage);
+	public interface ILogger
+	{
+		void Debug(string logMessage);
 
-        void Info(string logMessage);
+		void Info(string logMessage);
 
-        void Warn(string logMessage);
+		void Warn(string logMessage);
 
-        void Error(string logMessage);
+		void Error(string logMessage);
 
-        void SetLogLevel(LogLevel newLogLevel);
-    }
+		void SetLogLevel(LogLevel newLogLevel);
+	}
 
-    public sealed class Logger : ILogger
-    {
-        private LogLevel _logLevel;
+	public sealed class Logger : ILogger
+	{
+		private LogLevel _logLevel;
 
-        public Logger(LogLevel logLevel = LogLevel.Info)
-        {
-            _logLevel = logLevel;
-        }
+		public Logger(LogLevel logLevel = LogLevel.Info)
+		{
+			_logLevel = logLevel;
+		}
 
-        public void Debug(string logMessage)
-        {
-            if (_logLevel != LogLevel.Debug) return;
+		public void Debug(string logMessage)
+		{
+			if (_logLevel != LogLevel.Debug) return;
 
-            Console.WriteLine("DEBUG: " + logMessage);
-        }
+			Console.WriteLine("DEBUG: " + logMessage);
+		}
 
-        public void Info(string logMessage)
-        {
-            if (_logLevel > LogLevel.Info) return;
+		public void Info(string logMessage)
+		{
+			if (_logLevel > LogLevel.Info) return;
 
-            Console.WriteLine("INFO: " + logMessage);
-        }
+			Console.WriteLine("INFO: " + logMessage);
+		}
 
-        public void Warn(string logMessage)
-        {
-            if (_logLevel > LogLevel.Warn) return;
+		public void Warn(string logMessage)
+		{
+			if (_logLevel > LogLevel.Warn) return;
 
-            Console.WriteLine("WARNING: " + logMessage);
-        }
+			Console.WriteLine("WARNING: " + logMessage);
+		}
 
-        public void Error(string logMessage)
-        {
-            // Always log errors
-            Console.WriteLine("ERROR: " + logMessage);
-        }
+		public void Error(string logMessage)
+		{
+			if (_logLevel == LogLevel.Silent) return;
 
-        public void SetLogLevel(LogLevel newLogLevel)
-        {
-            this.Debug($"Setting log level to {newLogLevel.ToString()} from {_logLevel.ToString()}");
-            _logLevel = newLogLevel;
-        }
-    }
+			Console.WriteLine("ERROR: " + logMessage);
+		}
 
-    internal static class LoggingContext
-    {
-        private static ILogger _current;
+		public void SetLogLevel(LogLevel newLogLevel)
+		{
+			this.Debug($"Setting log level to {newLogLevel.ToString()} from {_logLevel.ToString()}");
+			_logLevel = newLogLevel;
+		}
+	}
 
-        static LoggingContext()
-        {
-            ResetToDefault();
-        }
+	internal static class LoggingContext
+	{
+		private static ILogger _current;
 
-        public static ILogger Current
-        {
-            get
-            {
-                return _current;
-            }
-            set
-            {
-                Guard.AgainstNull(value, nameof(ILogger));
-                _current = value;
-                Current.Debug($"LoggingContext changed.");
-            }
-        }
+		static LoggingContext()
+		{
+			ResetToDefault();
+		}
 
-        public static void ResetToDefault()
-        {
-            _current = new Logger();
-            Current.Debug($"LoggingContext reset to default.");
-        }
-    }
+		public static ILogger Current
+		{
+			get
+			{
+				return _current;
+			}
+			set
+			{
+				Guard.AgainstNull(value, nameof(ILogger));
+				_current = value;
+				Current.Debug($"LoggingContext changed.");
+			}
+		}
+
+		public static void ResetToDefault()
+		{
+			_current = new Logger();
+			Current.Debug($"LoggingContext reset to default.");
+		}
+	}
 }

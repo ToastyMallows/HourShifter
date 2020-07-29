@@ -10,6 +10,7 @@ nupkg/
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/tasks.json
+!.vscode/settings.json
 
 # Rider
 .idea
@@ -38,3 +39,6 @@ msbuild.wrn
 
 # Visual Studio 2015
 .vs/
+
+# Cake Tools
+tools/
