@@ -11,7 +11,11 @@ Currently targeting .NET Core 3.1.
 * `> dotnet .\src\HourShifter\bin\netcoreapp3.1\HourShifter.dll --help`
 * `> dotnet publish -c Release -r win-x64`
 
-Note:  See list of runtime identifiers (RIDs) to replace `win-x64` here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog 
+Note:  See list of runtime identifiers (RIDs) to replace `win-x64` here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+
+Check Releases on Github for the pre-compiled release for your operating system.  If your specific release isn't pre-built, pull down the code and build it locally.
+
+NOTE: I'm unable to test that the Mac OSX and Linux version work, please try them and report back if they don't! 🙂
 
 ## Command-line Arguments
 

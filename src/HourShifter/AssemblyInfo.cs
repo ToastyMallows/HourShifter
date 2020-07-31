@@ -8,3 +8,9 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyInformationalVersion("2.0.0")]
 [assembly: InternalsVisibleTo("HourShifterTests")]
 [assembly: AssemblyCopyright("Apache License v2.0")]
+
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
+[assembly: AssemblyConfiguration("Release")]
+#endif
