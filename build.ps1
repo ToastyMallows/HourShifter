@@ -1,40 +1,13 @@
-[CmdletBinding()]
-Param(
-	[string]$Script = "./build.cake",
-	[string]$Target,
-	[string]$Configuration,
-	[ValidateSet("Quiet", "Minimal", "Normal", "Verbose", "Diagnostic")]
-	[string]$Verbosity,
-	[switch]$ShowDescription,
-	[Alias("WhatIf", "Noop")]
-	[switch]$DryRun,
-	[switch]$SkipToolPackageRestore,
-	[Parameter(Position = 0, Mandatory = $false, ValueFromRemainingArguments = $true)]
-	[string[]]$ScriptArgs
-)
+$ErrorActionPreference = 'Stop'
 
-Write-Host "Preparing to run build script..."
+Set-Location -LiteralPath $PSScriptRoot
 
-if (!$PSScriptRoot) {
-	$PSScriptRoot = Split-Path $MyInvocation.MyCommand.Path -Parent
-}
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = '1'
+$env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+$env:DOTNET_NOLOGO = '1'
 
-# Restore all Dotnet tools
-Write-Host "Restoring all dotnet tools..."
 dotnet tool restore
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "Bootstrapping Cake..."
-Invoke-Expression "dotnet cake $Script --bootstrap"
-
-# Build Cake arguments
-$cakeArguments = @("$Script");
-if ($Target) { $cakeArguments += "-target=$Target" }
-if ($Configuration) { $cakeArguments += "-configuration=$Configuration" }
-if ($Verbosity) { $cakeArguments += "-verbosity=$Verbosity" }
-if ($ShowDescription) { $cakeArguments += "-showdescription" }
-if ($DryRun) { $cakeArguments += "-dryrun" }
-$cakeArguments += $ScriptArgs
-
-# Run Cake
-Write-Host "Running build script..."
-Invoke-Expression "dotnet cake $cakeArguments"
+dotnet cake @args
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
