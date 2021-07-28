@@ -16,8 +16,6 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.205'
-      - name: Bootstrap Cake
-        run: ./build.sh --target=Bootstrap --exclusive
       - name: Build
         run: ./build.sh --target=Build --exclusive
       - name: Test
