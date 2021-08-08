@@ -1,45 +1,43 @@
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
 
 namespace HourShifter
 {
-	internal class FileLoader
+	internal class FileLoader : IFileLoader
 	{
 		private const string ALL_FILES_WILDCARD = "*";
 		private readonly string _currentDirectory;
-		private readonly bool _currentDirectoryOnly;
+		private readonly Options _options;
 
-		public FileLoader(string currentDirectory, bool currentDirectoryOnly)
+		public FileLoader(Options options, string currentDirectory)
 		{
+			Guard.AgainstNull(options, nameof(options));
 			Guard.AgainstNullOrWhitespace(currentDirectory, nameof(currentDirectory));
 
+			_options = options;
 			_currentDirectory = currentDirectory;
-			_currentDirectoryOnly = currentDirectoryOnly;
 
-			LoggingContext.Current.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {currentDirectoryOnly}");
+			LoggingContext.Current.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {_options.CurrentDirectoryOnly}");
 		}
 
-		public bool CurrentDirectoryOnly
+		public IEnumerable<string> FindAllPaths()
 		{
-			get
+			SearchOption searchOption = SearchOption.AllDirectories;
+
+			if (_options.CurrentDirectoryOnly)
 			{
-				return _currentDirectoryOnly;
+				searchOption = SearchOption.TopDirectoryOnly;
 			}
+
+			return Directory.EnumerateFiles(_currentDirectory, ALL_FILES_WILDCARD, searchOption);
 		}
 
-		public IEnumerable<string> AllPaths
+		public async Task<byte[]> LoadImage(string path)
 		{
-			get
-			{
-				SearchOption searchOption = SearchOption.AllDirectories;
+			Guard.AgainstNullOrWhitespace(path, nameof(path));
 
-				if (_currentDirectoryOnly)
-				{
-					searchOption = SearchOption.TopDirectoryOnly;
-				}
-
-				return Directory.EnumerateFiles(_currentDirectory, ALL_FILES_WILDCARD, searchOption);
-			}
+			return await File.ReadAllBytesAsync(path);
 		}
 	}
 }

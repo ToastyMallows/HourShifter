@@ -4,14 +4,33 @@ Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of i
 
 ## Compiling
 
-Currently targeting .NET Core 3.1.
+Currently targeting .NET 5.
 
-* `> dotnet build`
-* `> dotnet test`
-* `> dotnet .\src\HourShifter\bin\netcoreapp3.1\HourShifter.dll --help`
+### Windows
+
+* `> .\build.ps1`
+
+### Linux/Mac
+
+* `> ./build.sh`
+
+## Publishing
+
+Create a self-contained release for a certain RID:
+
+### Windows
+
 * `> dotnet publish -c Release -r win-x64`
 
-Note:  See list of runtime identifiers (RIDs) to replace `win-x64` here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+### Linux
+
+* `> dotnet publish -c Release -r linux-x64`
+
+### MacOS
+
+* `> dotnet publish -c Release -r osx-x64`
+
+Note:  See the full list of runtime identifiers (RIDs) here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 Check Releases on Github for the pre-compiled release for your operating system.  If your specific release isn't pre-built, pull down the code and build it locally.
 
@@ -46,4 +65,4 @@ While importing pictures scanned with the [Epson FastFoto FF-640](https://amazon
 
 ## Problems?
 
-Submit an issue or pull request :)
+Submit an issue or pull request 😃

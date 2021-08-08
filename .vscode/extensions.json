@@ -1,7 +1,8 @@
 {
 	"recommendations": [
-		"ms-vscode.csharp",
+		"ms-dotnettools.csharp",
 		"k--kato.docomment",
-		"fudge.auto-using"
+		"fudge.auto-using",
+		"cake-build.cake-vscode",
 	]
 }

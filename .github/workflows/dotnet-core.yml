@@ -1,14 +1,13 @@
 name: .NET
 
-on:
-  push:
-    branches: [master, net5]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
@@ -17,6 +16,6 @@ jobs:
         with:
           dotnet-version: '5.0.205'
       - name: Build
-        run: ./build.sh --target=Build --exclusive
+        run: ./build.ps1 --target=Build --configuration=Release --exclusive
       - name: Test
-        run: ./build.sh --target=Test --exclusive
+        run: ./build.ps1 --target=Test --configuration=Release --exclusive

@@ -1,4 +1,5 @@
-﻿using CommandLine;
+﻿using System.Diagnostics.CodeAnalysis;
+using CommandLine;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ namespace HourShifter
 {
 	internal class Program
 	{
+		[ExcludeFromCodeCoverage]
 		static async Task<int> Main(string[] args)
 		{
 			int exitCode = Constants.SUCCESS_EXIT_CODE;
@@ -34,20 +36,18 @@ namespace HourShifter
 						LoggingContext.Current.SetLogLevel(LogLevel.Silent);
 					}
 
-					int? hoursToShift = options.Hours;
-
-					if (hoursToShift == null || hoursToShift == 0)
+					if (!options.Hours.HasValue || options.Hours == 0)
 					{
 						LoggingContext.Current.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
-						hoursToShift = Constants.DEFAULT_HOURS;
+						options.Hours = Constants.DEFAULT_HOURS;
 					}
 
 					// Composition root
 					string currentDirectory = Directory.GetCurrentDirectory();
 					LoggingContext.Current.Debug($"The current working directory is {currentDirectory}.");
 
-					FileLoader fileLoader = new FileLoader(currentDirectory, options.CurrentDirectoryOnly);
-					HourShifter hourShifter = new HourShifter(hoursToShift.Value, fileLoader);
+					IFileLoader fileLoader = new FileLoader(options, currentDirectory);
+					IHourShifter hourShifter = new HourShifter(options, fileLoader);
 					ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter);
 
 					exitCode = await bootstrap.Run();
@@ -67,9 +67,9 @@ namespace HourShifter
 
 	internal class ProgramBootstrap
 	{
-		private readonly HourShifter _hourShifter;
+		private readonly IHourShifter _hourShifter;
 
-		public ProgramBootstrap(HourShifter hourShifter)
+		public ProgramBootstrap(IHourShifter hourShifter)
 		{
 			Guard.AgainstNull(hourShifter, nameof(hourShifter));
 
@@ -92,12 +92,5 @@ namespace HourShifter
 
 			return Constants.SUCCESS_EXIT_CODE;
 		}
-	}
-
-	internal static class Constants
-	{
-		public static int SUCCESS_EXIT_CODE = 0;
-		public static int FAILURE_EXIT_CODE = 1;
-		public static int DEFAULT_HOURS = 12;
 	}
 }
