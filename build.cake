@@ -76,7 +76,7 @@ Task("Test")
 					CoverletOutputDirectory = Directory(coverageFolder),
 					CoverletOutputFormat = CoverletOutputFormat.opencover,
 					CoverletOutputName =  $"results",
-					Threshold = 23,
+					Threshold = 75,
 					ThresholdType = ThresholdType.Line | ThresholdType.Branch | ThresholdType.Method
 				}
 			);
