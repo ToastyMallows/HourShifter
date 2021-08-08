@@ -213,7 +213,7 @@ namespace HourShifterTest
 				}, Throws.Nothing);
 
 				Assert.That(shiftedFiles.HasValue);
-				Assert.That(shiftedFiles.Value, Is.Zero);
+				Assert.That(shiftedFiles.Value, Is.EqualTo(1));
 				mockFileLoader.Verify(m => m.FindAllPaths(), Times.Once);
 				mockFileLoader.Verify(m => m.LoadImage(It.IsAny<string>()), Times.Once);
 			});
