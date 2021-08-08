@@ -18,6 +18,16 @@ jobs:
         with:
           dotnet-version: '5.0.205'
 
+
+      - name: Restore Windows
+        if: matrix.os == 'windows-latest'
+        run: ./build.ps1 --target=Restore --configuration=Release --exclusive
+      
+      - name: Restore Unix
+        if: matrix.os != 'windows-latest'
+        run: ./build.sh --target=Restore --configuration=Release --exclusive
+
+
       - name: Build Windows
         if: matrix.os == 'windows-latest'
         run: ./build.ps1 --target=Build --configuration=Release --exclusive
@@ -25,6 +35,7 @@ jobs:
       - name: Build Unix
         if: matrix.os != 'windows-latest'
         run: ./build.sh --target=Build --configuration=Release --exclusive
+
 
       - name: Test Windows
         if: matrix.os == 'windows-latest'
