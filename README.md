@@ -2,6 +2,20 @@
 
 Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of images by a number of hours.
 
+## Dependencies
+
+### Windows
+
+None
+
+### Unix
+
+* libgdiplus
+
+### MacOS
+
+None? Using [runtime.osx.10.10-x64.CoreCompat.System.Drawing](https://www.nuget.org/packages/runtime.osx.10.10-x64.CoreCompat.System.Drawing)
+
 ## Compiling
 
 Currently targeting .NET 5.

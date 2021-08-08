@@ -1,4 +1,4 @@
-name: .NET
+name: Build and Test with Coverage Check
 
 on: [push, pull_request]
 
@@ -17,6 +17,10 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: '5.0.302'
+
+      - name: Install libgdiplus
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt update && sudo apt install libc6-dev libgdiplus
 
 
       - name: Restore Windows
