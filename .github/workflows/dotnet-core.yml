@@ -6,6 +6,7 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
 
@@ -23,7 +24,7 @@ jobs:
       
       - name: Build Unix
         if: matrix.os != 'windows-latest'
-        run: .\build.sh --target=Build --configuration=Release --exclusive
+        run: ./build.sh --target=Build --configuration=Release --exclusive
 
       - name: Test Windows
         if: matrix.os == 'windows-latest'
@@ -31,4 +32,4 @@ jobs:
 
       - name: Test Unix
         if: matrix.os != 'windows-latest'
-        run: .\build.sh --target=Test --configuration=Release --exclusive
+        run: ./build.sh --target=Test --configuration=Release --exclusive
