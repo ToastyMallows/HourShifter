@@ -34,6 +34,7 @@ namespace HourShifter
 
 		public void Debug(string logMessage)
 		{
+			if (_logLevel == LogLevel.Silent) return;
 			if (_logLevel != LogLevel.Debug) return;
 
 			Console.WriteLine("DEBUG: " + logMessage);
@@ -41,6 +42,7 @@ namespace HourShifter
 
 		public void Info(string logMessage)
 		{
+			if (_logLevel == LogLevel.Silent) return;
 			if (_logLevel > LogLevel.Info) return;
 
 			Console.WriteLine("INFO: " + logMessage);
@@ -48,6 +50,7 @@ namespace HourShifter
 
 		public void Warn(string logMessage)
 		{
+			if (_logLevel == LogLevel.Silent) return;
 			if (_logLevel > LogLevel.Warn) return;
 
 			Console.WriteLine("WARNING: " + logMessage);

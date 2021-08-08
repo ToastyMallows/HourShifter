@@ -7,6 +7,18 @@ namespace HourShifterTest
 	[TestFixture]
 	public class LoggingContextTest
 	{
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
+		}
+
 		[SetUp]
 		public void TestSetup()
 		{

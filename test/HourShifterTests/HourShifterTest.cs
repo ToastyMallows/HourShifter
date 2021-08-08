@@ -12,10 +12,10 @@ namespace HourShifterTest
 	[TestFixture]
 	public class HourShifterTest
 	{
-		private static string dllFile = "HourShifter.dll";
-		private static string sampleJpg = "./SampleImages/sample.jpg";
-		private static string samplePng = "./SampleImages/sample.png";
-		private static string sampleJpgInvalidTime = "./SampleImages/sampleInvalidTime.jpg";
+		private static string dllFile = Path.GetFullPath("./HourShifter.dll");
+		private static string sampleJpg = Path.GetFullPath("./SampleImages/sample.jpg");
+		private static string samplePng = Path.GetFullPath("./SampleImages/sample.png");
+		private static string sampleJpgInvalidTime = Path.GetFullPath("./SampleImages/sampleInvalidTime.jpg");
 
 		private static IEnumerable<string> sampleDllList = new List<string> { dllFile };
 		private static IEnumerable<string> sampleJpgList = new List<string> { sampleJpg };
@@ -55,10 +55,22 @@ namespace HourShifterTest
 
 				foreach (int hour in hours)
 				{
-					yield return new Options { Hours = hour, CurrentDirectoryOnly = false };
-					yield return new Options { Hours = hour, CurrentDirectoryOnly = true };
+					yield return new Options { Hours = hour, CurrentDirectoryOnly = false, Quiet = true };
+					yield return new Options { Hours = hour, CurrentDirectoryOnly = true, Quiet = true };
 				}
 			}
+		}
+
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
 		}
 
 		[Test]

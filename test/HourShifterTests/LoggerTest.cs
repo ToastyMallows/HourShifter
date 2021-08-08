@@ -45,7 +45,7 @@ namespace HourShifterTest
 		{
 			Assert.That(() =>
 			{
-				new Logger(logLevel).Debug("");
+				new Logger(logLevel).Debug(string.Empty);
 			}, Throws.Nothing);
 		}
 
@@ -55,7 +55,7 @@ namespace HourShifterTest
 		{
 			Assert.That(() =>
 			{
-				new Logger(logLevel).Info("");
+				new Logger(logLevel).Info(string.Empty);
 			}, Throws.Nothing);
 		}
 
@@ -65,7 +65,7 @@ namespace HourShifterTest
 		{
 			Assert.That(() =>
 			{
-				new Logger(logLevel).Warn("");
+				new Logger(logLevel).Warn(string.Empty);
 			}, Throws.Nothing);
 		}
 
@@ -75,7 +75,7 @@ namespace HourShifterTest
 		{
 			Assert.That(() =>
 			{
-				new Logger(logLevel).Error("");
+				new Logger(logLevel).Error(string.Empty);
 			}, Throws.Nothing);
 		}
 

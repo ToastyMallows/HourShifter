@@ -8,11 +8,15 @@ Currently targeting .NET 5.
 
 ### Windows
 
-* `> .\build.ps1`
+* `> .\build.ps1` (RID "win-x64" is the default)
 
-### Linux/Mac
+### Unix
 
-* `> ./build.sh`
+* `> ./build.sh --rid="linux-x64"`
+
+### MacOS
+
+* `> ./build.sh --rid="osx-x64"`
 
 ## Publishing
 
@@ -20,21 +24,19 @@ Create a self-contained release for a certain RID:
 
 ### Windows
 
-* `> dotnet publish -c Release -r win-x64`
+* `> .\build.ps1 --target=Publish` (RID "win-x64" is the default)
 
 ### Linux
 
-* `> dotnet publish -c Release -r linux-x64`
+* `> ./build.sh --target=Publish --rid="linux-x64"`
 
 ### MacOS
 
-* `> dotnet publish -c Release -r osx-x64`
+* `> ./build.sh --target=Publish --rid="osx-x64"`
 
-Note:  See the full list of runtime identifiers (RIDs) here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
+NOTE:  See the full list of runtime identifiers (RIDs) here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 Check Releases on Github for the pre-compiled release for your operating system.  If your specific release isn't pre-built, pull down the code and build it locally.
-
-NOTE: I'm unable to test that the Mac OSX and Linux version work, please try them and report back if they don't! 🙂
 
 ## Command-line Arguments
 

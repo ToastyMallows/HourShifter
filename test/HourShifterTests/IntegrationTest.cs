@@ -17,6 +17,18 @@ namespace HourShifterTest.IntegrationTests
 	{
 		private static string sampleJpgFile = "./SampleImages/sample.jpg";
 
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
+		}
+
 		[Test]
 		public async Task HourShifter_ShiftsDateTakenExifValue()
 		{

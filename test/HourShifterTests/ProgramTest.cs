@@ -8,6 +8,18 @@ namespace HourShifterTest
 	[TestFixture]
 	public class ProgramTest
 	{
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
+		}
+
 		[Test]
 		public void ProgramBootstrap_Constructor_ThrowsForNull()
 		{

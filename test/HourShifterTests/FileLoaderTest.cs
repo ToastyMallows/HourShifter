@@ -22,6 +22,18 @@ namespace HourShifterTest
 			}
 		}
 
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
+		{
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
+		}
+
 		[Test]
 		[TestCaseSource(nameof(FileLoader_InvalidCurrentDirectories))]
 		public void FileLoader_Constructor_ThrowsNullOrWhitespaceCurrentDirectory(string currentDirectory)

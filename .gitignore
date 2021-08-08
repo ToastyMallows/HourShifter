@@ -46,3 +46,6 @@ tools/
 
 # Code Coverage
 coverage/
+
+# Publish Folder
+publish/
