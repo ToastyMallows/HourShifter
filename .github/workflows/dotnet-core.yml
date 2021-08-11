@@ -8,7 +8,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        # Currently unable to support Unix and MacOS
+        # because of this bug: https://github.com/dotnet/runtime/issues/46411
+        # Uncomment this line when fixed!
+        # os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [windows-latest]
 
     steps:
       - uses: actions/checkout@v2

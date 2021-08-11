@@ -1,6 +1,4 @@
-using System.Net.Mime;
 using System;
-using System.Linq;
 using System.IO;
 using HourShifter;
 using NUnit.Framework;
@@ -15,7 +13,7 @@ namespace HourShifterTest.IntegrationTests
 	[TestFixture]
 	public class IntegrationTests
 	{
-		private static string sampleJpgFile = "./SampleImages/sample.jpg";
+		private static string sampleJpgFile = Path.GetFullPath("./SampleImages/sample.jpg");
 
 		[OneTimeSetUp]
 		public void OneTimeSetUp()

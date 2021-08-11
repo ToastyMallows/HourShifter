@@ -1,6 +1,6 @@
 # HourShifter
 
-Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of images by a number of hours.
+Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of Jpeg images by a number of hours.
 
 ## Dependencies
 
@@ -11,6 +11,7 @@ None
 ### Unix
 
 * libgdiplus
+* libc6-dev
 
 ### MacOS
 
@@ -26,11 +27,19 @@ Currently targeting .NET 5.
 
 ### Unix
 
+⚠ This application currently does not work on Unix-based systems because of [this bug](https://github.com/dotnet/runtime/issues/46411).
+
 * `> ./build.sh --rid="linux-x64"`
 
 ### MacOS
 
+⚠ This application currently does not work on MacOS systems because of [this bug](https://github.com/dotnet/runtime/issues/46411).
+
 * `> ./build.sh --rid="osx-x64"`
+
+## Debugging
+
+⚠ In order to debug you need to find/replace `$(RID)` and replace it with the current operating system's RID that you're targeting.  See the full list of runtime identifiers (RIDs) here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
 
 ## Publishing
 
@@ -42,10 +51,12 @@ Create a self-contained release for a certain RID:
 
 ### Linux
 
+* `> chmod +r build.sh`
 * `> ./build.sh --target=Publish --rid="linux-x64"`
 
 ### MacOS
 
+* `> chmod +r build.sh`
 * `> ./build.sh --target=Publish --rid="osx-x64"`
 
 NOTE:  See the full list of runtime identifiers (RIDs) here:  https://docs.microsoft.com/en-us/dotnet/core/rid-catalog
