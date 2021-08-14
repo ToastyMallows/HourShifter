@@ -12,14 +12,6 @@ namespace HourShifter
 			}
 		}
 
-		public static void AgainstZero(int value, string parameterName)
-		{
-			if (value == 0)
-			{
-				throw new ArgumentException($"{parameterName} is zero.", parameterName);
-			}
-		}
-
 		public static void AgainstNullOrWhitespace(string str, string parameterName)
 		{
 			if (string.IsNullOrWhiteSpace(str))

@@ -1,4 +1,5 @@
 using HourShifter;
+using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections;
@@ -21,22 +22,85 @@ namespace HourShifterTest
 			}
 		}
 
-		[Test]
-		[Description("Throws for invalid current directories")]
-		[TestCaseSource("FileLoader_InvalidCurrentDirectories")]
-		public void FileLoader_Throws_NullOrWhitespaceCurrentDirectory(string currentDirectory)
+		[OneTimeSetUp]
+		public void OneTimeSetUp()
 		{
-			Assert.That(() => { new FileLoader(currentDirectory, false); }, Throws.ArgumentException);
+			LoggingContext.Current = new Logger(LogLevel.Silent);
+		}
+
+		[OneTimeTearDown]
+		public void OneTimeTearDown()
+		{
+			LoggingContext.ResetToDefault();
 		}
 
 		[Test]
-		[Description("AllPaths shouldn't return null when running in the current test directory")]
-		public void FileLoader_AllPathsNotNull()
+		[TestCaseSource(nameof(FileLoader_InvalidCurrentDirectories))]
+		public void FileLoader_Constructor_ThrowsNullOrWhitespaceCurrentDirectory(string currentDirectory)
 		{
-			FileLoader fileLoader = new FileLoader(Directory.GetCurrentDirectory(), false);
-			Assert.That(fileLoader.AllPaths, Is.Not.Null.Or.Empty);
+			Assert.That(() =>
+			{
+				new FileLoader(new Options(), currentDirectory);
+			}, Throws.InstanceOf<ArgumentException>().Or.InstanceOf<ArgumentNullException>());
 		}
 
-		// TODO: Tests for the currentDirectoryOnly boolean
+		[Test]
+		public void FileLoader_Constructor_ThrowsForNull()
+		{
+			Assert.That(() =>
+			{
+				new FileLoader(null, Directory.GetCurrentDirectory());
+			}, Throws.ArgumentNullException);
+		}
+
+		[Test]
+		public void FileLoader_AllPaths_NotNull([Values(true, false)] bool currentDirectoryOnly)
+		{
+			Options options = new Options
+			{
+				CurrentDirectoryOnly = currentDirectoryOnly
+			};
+
+			FileLoader fileLoader = new FileLoader(options, Directory.GetCurrentDirectory());
+			Assert.That(fileLoader.FindAllPaths(), Is.Not.Null.Or.Empty);
+		}
+
+		[Test]
+		[TestCaseSource(nameof(FileLoader_InvalidCurrentDirectories))]
+		public void FileLoader_LoadImage_ThrowsForNullOrWhitespace(string dir)
+		{
+			Options options = new Options
+			{
+				CurrentDirectoryOnly = true
+			};
+
+			FileLoader fileLoader = new FileLoader(options, Directory.GetCurrentDirectory());
+			Assert.That(async () =>
+			{
+				await fileLoader.LoadImage(dir);
+			}, Throws.ArgumentException);
+		}
+
+		[Test]
+		public void FileLoader_LoadImage_ReturnsBytes()
+		{
+			Options options = new Options
+			{
+				CurrentDirectoryOnly = true
+			};
+
+			FileLoader fileLoader = new FileLoader(options, Directory.GetCurrentDirectory());
+			Assert.Multiple(() =>
+			{
+				byte[] bytes = null;
+
+				Assert.That(async () =>
+				{
+					bytes = await fileLoader.LoadImage(Path.GetFullPath("./SampleImages/sample.jpg"));
+				}, Throws.Nothing);
+
+				Assert.That(bytes, Is.Not.Null);
+			});
+		}
 	}
 }

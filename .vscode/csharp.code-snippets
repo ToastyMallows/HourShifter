@@ -1,0 +1,24 @@
+{
+	"Assert Multiple": {
+		"prefix": "assertm",
+		"body": [
+			"Assert.Multiple(() =>",
+			"{",
+			"\t$TM_SELECTED_TEXT$0",
+			"});"
+		],
+		"description": "Insert an Assert.Multiple statement",
+		"scope": "csharp"
+	},
+	"Assert That": {
+		"prefix": "assertt",
+		"body": [
+			"Assert.That(() =>",
+			"{",
+			"\t$TM_SELECTED_TEXT$0",
+			"}$1);"
+		],
+		"description": "Insert an Assert.That statement",
+		"scope": "csharp"
+	}
+}

@@ -11,6 +11,7 @@ nupkg/
 !.vscode/launch.json
 !.vscode/tasks.json
 !.vscode/settings.json
+!.vscode/csharp.code-snippets
 
 # Rider
 .idea
@@ -42,3 +43,9 @@ msbuild.wrn
 
 # Cake Tools
 tools/
+
+# Code Coverage
+coverage/
+
+# Publish Folder
+publish/

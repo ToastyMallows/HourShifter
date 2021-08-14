@@ -1,0 +1,13 @@
+<Project>
+	<PropertyGroup>
+		<RuntimeIdentifier>$(RID)</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<Choose>
+		<When Condition="$(RID) == 'osx-x64'">
+			<ItemGroup>
+				<PackageReference Include="runtime.osx.10.10-x64.CoreCompat.System.Drawing" Version="5.8.64" />
+			</ItemGroup>
+		</When>
+	</Choose>
+</Project>
