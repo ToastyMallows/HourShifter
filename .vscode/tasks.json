@@ -3,10 +3,10 @@
 	"tasks": [
 		{
 			"label": "build",
-			"command": "dotnet",
+			"command": ".\\build.ps1",
 			"type": "process",
 			"args": [
-				"build"
+				"--target=build"
 			],
 			"problemMatcher": "$msCompile"
 		}

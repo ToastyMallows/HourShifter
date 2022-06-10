@@ -52,12 +52,6 @@ namespace HourShifter
 
 					exitCode = await bootstrap.Run();
 					LoggingContext.Current.Debug($"Returning exit code {exitCode}.");
-
-					if (!options.Quiet)
-					{
-						Console.Write("Press any key to exit...");
-						Console.ReadKey();
-					}
 				});
 
 			LoggingContext.Current.Debug($"Returning exit code: {exitCode}");

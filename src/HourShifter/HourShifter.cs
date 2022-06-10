@@ -1,18 +1,18 @@
+using System.Globalization;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 
 namespace HourShifter
 {
 	internal class HourShifter : IHourShifter
 	{
-		private const string DATE_TAKEN_DATETIME_FORMAT = "yyyy:MM:dd HH:mm:ss\0";
+		private const string DATE_TAKEN_DATETIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
 		private const int DATE_TAKEN_PROPERTY_ID = 36867;
 
 		private readonly bool _shiftBackwards;
@@ -64,7 +64,7 @@ namespace HourShifter
 				// See if the file is an image
 				try
 				{
-					using (Image image = Image.FromFile(path)) { }
+					using (Image image = Image.Load(path)) { }
 				}
 				catch
 				{
@@ -76,15 +76,13 @@ namespace HourShifter
 				{
 					byte[] originalImageBytes = await _fileLoader.LoadImage(path);
 					using (MemoryStream memoryStream = new MemoryStream(originalImageBytes))
-					using (Image image = Image.FromStream(memoryStream, false, false))
+					using (Image image = await Image.LoadAsync(memoryStream))
 					{
-						PropertyItem propertyItem = image.GetPropertyItem(DATE_TAKEN_PROPERTY_ID);
-						string dateTakenString = _regex.Replace(Encoding.UTF8.GetString(propertyItem.Value), "-", 2);
+						IExifValue<string> dateCreated = image.Metadata.ExifProfile.GetValue<string>(ExifTag.DateTimeOriginal);
 
-						DateTime dateTaken;
-						if (!DateTime.TryParse(dateTakenString, out dateTaken))
+						if (DateTime.TryParseExact(dateCreated.Value, DATE_TAKEN_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTaken))
 						{
-							LoggingContext.Current.Warn($"Could not parse the Date/Time {dateTakenString} for image located at {path}.");
+							LoggingContext.Current.Warn($"Could not parse the Date/Time {dateCreated.Value} for image located at {path}.");
 							continue;
 						}
 
@@ -101,10 +99,9 @@ namespace HourShifter
 						}
 
 						DateTime shiftedDateTaken = new DateTime(shiftedTicks);
-						propertyItem.Value = Encoding.UTF8.GetBytes(shiftedDateTaken.ToString(DATE_TAKEN_DATETIME_FORMAT));
-						image.SetPropertyItem(propertyItem);
+						image.Metadata.ExifProfile.SetValue<string>(ExifTag.DateTimeOriginal, shiftedDateTaken.ToString(DATE_TAKEN_DATETIME_FORMAT));
 
-						image.Save(path, image.RawFormat);
+						await image.SaveAsJpegAsync(path);
 
 						LoggingContext.Current.Info($"The original Date/Time {dateTaken} was shifted to {shiftedDateTaken}.{Environment.NewLine}");
 						filesShifted++;

@@ -1,6 +1,6 @@
-#tool nuget:?package=NUnit.ConsoleRunner&version=3.12.0
+#tool nuget:?package=NUnit.ConsoleRunner&version=3.15.0
 #tool nuget:?package=OpenCover&version=4.7.1221
-#tool "nuget:?package=ReportGenerator&version=4.8.12"
+#tool "nuget:?package=ReportGenerator&version=5.1.9"
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 using System.IO;
 
@@ -27,7 +27,7 @@ Task("Clean")
 {
 	Information("Cleaning in Debug and Release!");
 
-	DotNetCoreClean(solutionFile, new DotNetCoreCleanSettings{
+	DotNetClean(solutionFile, new DotNetCleanSettings{
 		NoLogo = true,
 		Configuration = DEBUG,
 		ArgumentCustomization = (builder) => {
@@ -41,7 +41,7 @@ Task("Clean")
 		}
 	});
 
-	DotNetCoreClean(solutionFile, new DotNetCoreCleanSettings{
+	DotNetClean(solutionFile, new DotNetCleanSettings{
 		NoLogo = true,
 		Configuration = RELEASE,
 		ArgumentCustomization = (builder) => {
@@ -73,7 +73,7 @@ Task("Clean")
 Task("Restore")
 	.Does(() => 
 {
-	DotNetCoreRestore(solutionFile, new DotNetCoreRestoreSettings{
+	DotNetRestore(solutionFile, new DotNetRestoreSettings{
 		ArgumentCustomization = (builder) => {
 			if (runtimeIdentifier == windowsRID) {
 				return builder.Append($"/p:RID={runtimeIdentifier}");
@@ -90,7 +90,7 @@ Task("Build")
 	.IsDependentOn("Restore")
 	.Does(() =>
 {
-	DotNetCoreBuild(solutionFile, new DotNetCoreBuildSettings{
+	DotNetBuild(solutionFile, new DotNetBuildSettings{
 		NoLogo = true,
 		NoRestore = true,
 		Configuration = configuration,
@@ -167,7 +167,7 @@ Task("Publish")
 	.IsDependentOn("Test")
 	.Does(() =>
 {
-	DotNetCorePublish(projectFile, new DotNetCorePublishSettings{
+	DotNetPublish(projectFile, new DotNetPublishSettings{
 		NoLogo = true,
 		Configuration = configuration,
 		ArgumentCustomization = (builder) => {
