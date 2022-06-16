@@ -23,10 +23,8 @@ namespace HourShifter
 
 		public HourShifter(Options options, IFileLoader fileLoader)
 		{
-			Guard.AgainstNull(options, nameof(options));
-			Guard.AgainstNull(fileLoader, nameof(fileLoader));
-
-			_options = options;
+			_options = options ?? throw new ArgumentNullException(nameof(options));
+			_fileLoader = fileLoader ?? throw new ArgumentNullException(nameof(fileLoader));
 
 			int hoursToShift = options.Hours.Value;
 
@@ -37,7 +35,6 @@ namespace HourShifter
 			}
 
 			_hoursToShift = TimeSpan.FromHours(hoursToShift);
-			_fileLoader = fileLoader;
 		}
 
 		public async Task<int> Shift()

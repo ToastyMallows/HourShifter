@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
@@ -12,11 +13,8 @@ namespace HourShifter
 
 		public FileLoader(Options options, string currentDirectory)
 		{
-			Guard.AgainstNull(options, nameof(options));
-			Guard.AgainstNullOrWhitespace(currentDirectory, nameof(currentDirectory));
-
-			_options = options;
-			_currentDirectory = currentDirectory;
+			_options = options ?? throw new ArgumentNullException(nameof(options));
+			_currentDirectory = !string.IsNullOrWhiteSpace(currentDirectory) ? currentDirectory : throw new ArgumentException(nameof(currentDirectory));
 
 			LoggingContext.Current.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {_options.CurrentDirectoryOnly}");
 		}
@@ -35,7 +33,10 @@ namespace HourShifter
 
 		public async Task<byte[]> LoadImage(string path)
 		{
-			Guard.AgainstNullOrWhitespace(path, nameof(path));
+			if (string.IsNullOrWhiteSpace(path))
+			{
+				throw new ArgumentException(nameof(path));
+			}
 
 			return await File.ReadAllBytesAsync(path);
 		}

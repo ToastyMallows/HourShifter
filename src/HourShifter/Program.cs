@@ -65,7 +65,7 @@ namespace HourShifter
 
 		public ProgramBootstrap(IHourShifter hourShifter)
 		{
-			Guard.AgainstNull(hourShifter, nameof(hourShifter));
+			_ = hourShifter ?? throw new ArgumentNullException(nameof(hourShifter));
 
 			_hourShifter = hourShifter;
 		}

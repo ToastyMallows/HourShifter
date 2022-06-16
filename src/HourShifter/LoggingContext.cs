@@ -87,7 +87,7 @@ namespace HourShifter
 			}
 			set
 			{
-				Guard.AgainstNull(value, nameof(ILogger));
+				_ = value ?? throw new ArgumentNullException(nameof(value));
 				_current = value;
 				Current.Debug($"LoggingContext changed.");
 			}
