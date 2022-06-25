@@ -9,14 +9,16 @@ namespace HourShifter
 	{
 		private const string ALL_FILES_WILDCARD = "*";
 		private readonly string _currentDirectory;
+		private readonly ILogger _logger;
 		private readonly Options _options;
 
-		public FileLoader(Options options, string currentDirectory)
+		public FileLoader(Options options, string currentDirectory, ILogger logger)
 		{
 			_options = options ?? throw new ArgumentNullException(nameof(options));
 			_currentDirectory = !string.IsNullOrWhiteSpace(currentDirectory) ? currentDirectory : throw new ArgumentException(nameof(currentDirectory));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-			LoggingContext.Current.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {_options.CurrentDirectoryOnly}");
+			_logger.Debug($"{nameof(FileLoader)} created with current directory of {_currentDirectory}, search current directories only: {_options.CurrentDirectoryOnly}");
 		}
 
 		public IEnumerable<string> FindAllPaths()

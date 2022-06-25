@@ -1,5 +1,0 @@
-<Project>
-	<PropertyGroup>
-		<RuntimeIdentifier>$(RID)</RuntimeIdentifier>
-	</PropertyGroup>
-</Project>

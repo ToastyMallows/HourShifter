@@ -13,18 +13,18 @@ namespace HourShifter
 	internal class HourShifter : IHourShifter
 	{
 		private const string DATE_TAKEN_DATETIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
-		private const int DATE_TAKEN_PROPERTY_ID = 36867;
 
 		private readonly bool _shiftBackwards;
 		private readonly Options _options;
 		private readonly TimeSpan _hoursToShift;
 		private readonly IFileLoader _fileLoader;
-		private readonly static Regex _regex = new Regex(":");
+		private readonly ILogger _logger;
 
-		public HourShifter(Options options, IFileLoader fileLoader)
+		public HourShifter(Options options, IFileLoader fileLoader, ILogger logger)
 		{
 			_options = options ?? throw new ArgumentNullException(nameof(options));
 			_fileLoader = fileLoader ?? throw new ArgumentNullException(nameof(fileLoader));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
 			int hoursToShift = options.Hours.Value;
 
@@ -39,18 +39,18 @@ namespace HourShifter
 
 		public async Task<int> Shift()
 		{
-			LoggingContext.Current.Info($"Beginning the hour shift...");
-			LoggingContext.Current.Info($"Shifting all images {(_shiftBackwards ? "backwards" : "forwards")} {_hoursToShift.Hours} hour(s).{Environment.NewLine}");
+			_logger.Info($"Beginning the hour shift...");
+			_logger.Info($"Shifting all images {(_shiftBackwards ? "backwards" : "forwards")} {_hoursToShift.Hours} hour(s).{Environment.NewLine}");
 
 			IEnumerable<string> allPaths = _fileLoader.FindAllPaths();
 
 			int pathsCount = allPaths.Count();
 
-			LoggingContext.Current.Debug($"Found {pathsCount} files.");
+			_logger.Debug($"Found {pathsCount} files.");
 
 			if (allPaths.Count() == 0)
 			{
-				LoggingContext.Current.Info($"Didn't find any files to shift.");
+				_logger.Info($"Didn't find any files to shift.");
 				return 0;
 			}
 
@@ -65,7 +65,7 @@ namespace HourShifter
 				}
 				catch
 				{
-					LoggingContext.Current.Debug($"This file doesn't seem to be an image: {path}");
+					_logger.Debug($"This file doesn't seem to be an image: {path}");
 					continue;
 				}
 
@@ -77,13 +77,13 @@ namespace HourShifter
 					{
 						IExifValue<string> dateCreated = image.Metadata.ExifProfile.GetValue<string>(ExifTag.DateTimeOriginal);
 
-						if (DateTime.TryParseExact(dateCreated.Value, DATE_TAKEN_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTaken))
+						if (!DateTime.TryParseExact(dateCreated.Value, DATE_TAKEN_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTaken))
 						{
-							LoggingContext.Current.Warn($"Could not parse the Date/Time {dateCreated.Value} for image located at {path}.");
+							_logger.Warn($"Could not parse the Date/Time {dateCreated.Value} for image located at {path}.");
 							continue;
 						}
 
-						LoggingContext.Current.Info($"Shifting Date/Time taken for image {path}...");
+						_logger.Info($"Shifting Date/Time taken for image {path}...");
 
 						long shiftedTicks;
 						if (_shiftBackwards)
@@ -100,24 +100,24 @@ namespace HourShifter
 
 						await image.SaveAsJpegAsync(path);
 
-						LoggingContext.Current.Info($"The original Date/Time {dateTaken} was shifted to {shiftedDateTaken}.{Environment.NewLine}");
+						_logger.Info($"The original Date/Time {dateTaken} was shifted to {shiftedDateTaken}.{Environment.NewLine}");
 						filesShifted++;
 					}
 				}
 				catch (Exception e)
 				{
-					LoggingContext.Current.Error($"File located at '{path}' has issues. Skipping this file.");
-					LoggingContext.Current.Error($"{e.ToString()}{Environment.NewLine}");
+					_logger.Error($"File located at '{path}' has issues. Skipping this file.");
+					_logger.Error($"{e.ToString()}{Environment.NewLine}");
 				}
 			}
 
 			if (filesShifted == 0)
 			{
-				LoggingContext.Current.Info($"No images were modified! Either: ");
-				LoggingContext.Current.Info($"\t1. No images were found in the current directory{(!_options.CurrentDirectoryOnly ? " (including subfolders)" : string.Empty)}");
-				LoggingContext.Current.Info($"  or");
-				LoggingContext.Current.Info($"\t2. Images were found but errors occurred.{Environment.NewLine}");
-				LoggingContext.Current.Info($"Run this utility with Debug logging turned on for more information{Environment.NewLine}");
+				_logger.Info(@$"No images were modified! Either: 
+\t1. No images were found in the current directory{(!_options.CurrentDirectoryOnly ? " (including subfolders)" : string.Empty)}
+  or
+\t2. Images were found but errors occurred.
+Run this utility with Debug logging turned on for more information");
 			}
 
 			return filesShifted;

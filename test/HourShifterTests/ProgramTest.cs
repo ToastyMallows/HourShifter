@@ -8,47 +8,42 @@ namespace HourShifterTest
 	[TestFixture]
 	public class ProgramTest
 	{
-		[OneTimeSetUp]
-		public void OneTimeSetUp()
+		[Test]
+		public void Constructor_ThrowsForNull()
 		{
-			LoggingContext.Current = new Logger(LogLevel.Silent);
-		}
+			Assert.Multiple(() =>
+			{
+				Assert.That(() =>
+				{
+					new ProgramBootstrap(null, Mock.Of<ILogger>());
+				}, Throws.ArgumentNullException);
 
-		[OneTimeTearDown]
-		public void OneTimeTearDown()
-		{
-			LoggingContext.ResetToDefault();
+				Assert.That(() =>
+				{
+					new ProgramBootstrap(Mock.Of<IHourShifter>(), null);
+				}, Throws.ArgumentNullException);
+			});
 		}
 
 		[Test]
-		public void ProgramBootstrap_Constructor_ThrowsForNull()
+		public void Constructor_DoesNotThrow()
 		{
 			Assert.That(() =>
 			{
-				new ProgramBootstrap(null);
-			}, Throws.ArgumentNullException);
-		}
-
-		[Test]
-		public void ProgramBootstrap_Constructor_DoesNotThrow()
-		{
-			Assert.That(() =>
-			{
-				new ProgramBootstrap(Mock.Of<IHourShifter>());
+				new ProgramBootstrap(Mock.Of<IHourShifter>(), Mock.Of<ILogger>());
 			}, Throws.Nothing);
 		}
 
 		[Test]
-		public void ProgramBootstrap_Run_ReturnsSuccess()
+		public void Run_ReturnsSuccess()
 		{
 			Mock<IHourShifter> mock = new Mock<IHourShifter>();
 
 			mock
 				.Setup(m => m.Shift().Result)
-					.Returns(0)
-						.Verifiable();
+					.Returns(0);
 
-			ProgramBootstrap programBootstrap = new ProgramBootstrap(mock.Object);
+			ProgramBootstrap programBootstrap = new ProgramBootstrap(mock.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{
@@ -66,16 +61,15 @@ namespace HourShifterTest
 		}
 
 		[Test]
-		public void ProgramBootstrap_Run_ReturnsFailure()
+		public void Run_ReturnsFailure()
 		{
 			Mock<IHourShifter> mock = new Mock<IHourShifter>();
 
 			mock
 				.Setup(m => m.Shift().Result)
-					.Throws(new Exception())
-						.Verifiable();
+					.Throws(new Exception());
 
-			ProgramBootstrap programBootstrap = new ProgramBootstrap(mock.Object);
+			ProgramBootstrap programBootstrap = new ProgramBootstrap(mock.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{

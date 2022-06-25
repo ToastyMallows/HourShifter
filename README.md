@@ -2,24 +2,13 @@
 
 Simple command-line utility to shift the DateTaken EXIF metadata (ID 36867) of Jpeg images by a number of hours.
 
-## Dependencies
+## Runtime Dependencies
 
-### Windows
-
-None
-
-### Unix
-
-* libgdiplus
-* libc6-dev
-
-### MacOS
-
-None? Using [runtime.osx.10.10-x64.CoreCompat.System.Drawing](https://www.nuget.org/packages/runtime.osx.10.10-x64.CoreCompat.System.Drawing)
+None, using [ImageSharp](https://github.com/SixLabors/ImageSharp)
 
 ## Compiling
 
-Currently targeting .NET 5.
+Currently targeting .NET 6.
 
 ### Windows
 
@@ -27,13 +16,9 @@ Currently targeting .NET 5.
 
 ### Unix
 
-⚠ This application currently does not work on Unix-based systems because of [this bug](https://github.com/dotnet/runtime/issues/46411).
-
 * `> ./build.sh --rid="linux-x64"`
 
 ### MacOS
-
-⚠ This application currently does not work on MacOS systems because of [this bug](https://github.com/dotnet/runtime/issues/46411).
 
 * `> ./build.sh --rid="osx-x64"`
 

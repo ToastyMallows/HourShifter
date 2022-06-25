@@ -24,37 +24,37 @@ namespace HourShifter
 			await parserResult
 				.WithParsedAsync(async (options) =>
 				{
+					ILogger logger = new Logger();
 					if (!options.Quiet)
 					{
 						if (Enum.TryParse(options.LogLevel, out LogLevel logLevel))
 						{
-							LoggingContext.Current.SetLogLevel(logLevel);
+							logger.SetLogLevel(logLevel);
 						}
 					}
 					else
 					{
-						LoggingContext.Current.SetLogLevel(LogLevel.Silent);
+						logger.SetLogLevel(LogLevel.Silent);
 					}
 
 					if (!options.Hours.HasValue || options.Hours == 0)
 					{
-						LoggingContext.Current.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
+						logger.Debug($"Using the default number of hours ({Constants.DEFAULT_HOURS})");
 						options.Hours = Constants.DEFAULT_HOURS;
 					}
 
 					// Composition root
 					string currentDirectory = Directory.GetCurrentDirectory();
-					LoggingContext.Current.Debug($"The current working directory is {currentDirectory}.");
+					logger.Debug($"The current working directory is {currentDirectory}.");
 
-					IFileLoader fileLoader = new FileLoader(options, currentDirectory);
-					IHourShifter hourShifter = new HourShifter(options, fileLoader);
-					ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter);
+					IFileLoader fileLoader = new FileLoader(options, currentDirectory, logger);
+					IHourShifter hourShifter = new HourShifter(options, fileLoader, logger);
+					ProgramBootstrap bootstrap = new ProgramBootstrap(hourShifter, logger);
 
 					exitCode = await bootstrap.Run();
-					LoggingContext.Current.Debug($"Returning exit code {exitCode}.");
+					logger.Debug($"Returning exit code {exitCode}.");
 				});
 
-			LoggingContext.Current.Debug($"Returning exit code: {exitCode}");
 			return exitCode;
 		}
 	}
@@ -62,12 +62,12 @@ namespace HourShifter
 	internal class ProgramBootstrap
 	{
 		private readonly IHourShifter _hourShifter;
+		private readonly ILogger _logger;
 
-		public ProgramBootstrap(IHourShifter hourShifter)
+		public ProgramBootstrap(IHourShifter hourShifter, ILogger logger)
 		{
-			_ = hourShifter ?? throw new ArgumentNullException(nameof(hourShifter));
-
-			_hourShifter = hourShifter;
+			_hourShifter = hourShifter ?? throw new ArgumentNullException(nameof(hourShifter));
+			_logger = logger ?? throw new ArgumentNullException(nameof(logger));
 		}
 
 		public async Task<int> Run()
@@ -76,11 +76,11 @@ namespace HourShifter
 			{
 				int filesShifted = await _hourShifter.Shift();
 
-				LoggingContext.Current.Info($"Shifted {filesShifted} files.{Environment.NewLine}");
+				_logger.Info($"Shifted {filesShifted} files.{Environment.NewLine}");
 			}
 			catch (Exception e)
 			{
-				LoggingContext.Current.Error($"{e.ToString()}{Environment.NewLine}");
+				_logger.Error($"{e.ToString()}{Environment.NewLine}");
 				return Constants.FAILURE_EXIT_CODE;
 			}
 

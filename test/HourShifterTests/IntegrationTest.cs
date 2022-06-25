@@ -2,11 +2,12 @@ using System;
 using System.IO;
 using HourShifter;
 using NUnit.Framework;
-using System.Drawing;
 using System.Threading.Tasks;
-using System.Drawing.Imaging;
 using System.Text.RegularExpressions;
 using System.Text;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using System.Globalization;
 
 namespace HourShifterTest.IntegrationTests
 {
@@ -14,18 +15,6 @@ namespace HourShifterTest.IntegrationTests
 	public class IntegrationTests
 	{
 		private static string sampleJpgFile = Path.GetFullPath("./SampleImages/sample.jpg");
-
-		[OneTimeSetUp]
-		public void OneTimeSetUp()
-		{
-			LoggingContext.Current = new Logger(LogLevel.Silent);
-		}
-
-		[OneTimeTearDown]
-		public void OneTimeTearDown()
-		{
-			LoggingContext.ResetToDefault();
-		}
 
 		[Test]
 		public async Task HourShifter_ShiftsDateTakenExifValue()
@@ -37,9 +26,11 @@ namespace HourShifterTest.IntegrationTests
 				Quiet = true
 			};
 
-			IFileLoader fileLoader = new FileLoader(options, Directory.GetCurrentDirectory());
-			IHourShifter hourShifter = new HourShifter.HourShifter(options, fileLoader);
-			ProgramBootstrap programBootstrap = new ProgramBootstrap(hourShifter);
+			var aggregateLogger = new AggregateLogger();
+
+			IFileLoader fileLoader = new FileLoader(options, Directory.GetCurrentDirectory(), aggregateLogger);
+			IHourShifter hourShifter = new HourShifter.HourShifter(options, fileLoader, aggregateLogger);
+			ProgramBootstrap programBootstrap = new ProgramBootstrap(hourShifter, aggregateLogger);
 
 			DateTime originalDateTime = await getJpgDateTaken(sampleJpgFile);
 
@@ -64,16 +55,14 @@ namespace HourShifterTest.IntegrationTests
 
 		private static async Task<DateTime> getJpgDateTaken(string path)
 		{
-			Regex _regex = new Regex(":");
+			const string DATE_TAKEN_DATETIME_FORMAT = "yyyy:MM:dd HH:mm:ss";
 			byte[] originalImageBytes = await File.ReadAllBytesAsync(path);
 			using (MemoryStream memoryStream = new MemoryStream(originalImageBytes))
-			using (Image image = Image.FromStream(memoryStream, false, false))
+			using (Image image = await Image.LoadAsync(memoryStream))
 			{
-				PropertyItem propertyItem = image.GetPropertyItem(36867);
-				string dateTakenString = _regex.Replace(Encoding.UTF8.GetString(propertyItem.Value), "-", 2);
+				IExifValue<string> dateCreated = image.Metadata.ExifProfile.GetValue<string>(ExifTag.DateTimeOriginal);
 
-				DateTime dateTaken;
-				if (!DateTime.TryParse(dateTakenString, out dateTaken))
+				if (!DateTime.TryParseExact(dateCreated.Value, DATE_TAKEN_DATETIME_FORMAT, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime dateTaken))
 				{
 					Assert.Fail("sample.jpg is missing a DateTaken or it's invalid.");
 				}

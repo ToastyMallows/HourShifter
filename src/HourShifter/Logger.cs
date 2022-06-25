@@ -69,34 +69,4 @@ namespace HourShifter
 			_logLevel = newLogLevel;
 		}
 	}
-
-	internal static class LoggingContext
-	{
-		private static ILogger _current;
-
-		static LoggingContext()
-		{
-			ResetToDefault();
-		}
-
-		public static ILogger Current
-		{
-			get
-			{
-				return _current;
-			}
-			set
-			{
-				_ = value ?? throw new ArgumentNullException(nameof(value));
-				_current = value;
-				Current.Debug($"LoggingContext changed.");
-			}
-		}
-
-		public static void ResetToDefault()
-		{
-			_current = new Logger();
-			Current.Debug($"LoggingContext reset to default.");
-		}
-	}
 }

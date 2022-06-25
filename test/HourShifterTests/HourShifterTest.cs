@@ -61,25 +61,13 @@ namespace HourShifterTest
 			}
 		}
 
-		[OneTimeSetUp]
-		public void OneTimeSetUp()
-		{
-			LoggingContext.Current = new Logger(LogLevel.Silent);
-		}
-
-		[OneTimeTearDown]
-		public void OneTimeTearDown()
-		{
-			LoggingContext.ResetToDefault();
-		}
-
 		[Test]
 		[TestCaseSource(nameof(Options_TestCases))]
 		public void HourShifter_Constructor_DoesNotThrow(Options options)
 		{
 			Assert.That(() =>
 			{
-				new HourShifter.HourShifter(options, Mock.Of<IFileLoader>());
+				new HourShifter.HourShifter(options, Mock.Of<IFileLoader>(), Mock.Of<ILogger>());
 			}, Throws.Nothing);
 		}
 
@@ -91,12 +79,17 @@ namespace HourShifterTest
 			{
 				Assert.That(() =>
 				{
-					new HourShifter.HourShifter(null, Mock.Of<IFileLoader>());
+					new HourShifter.HourShifter(null, Mock.Of<IFileLoader>(), Mock.Of<ILogger>());
 				}, Throws.ArgumentNullException);
 
 				Assert.That(() =>
 				{
-					new HourShifter.HourShifter(options, null);
+					new HourShifter.HourShifter(options, null, Mock.Of<ILogger>());
+				}, Throws.ArgumentNullException);
+
+				Assert.That(() =>
+				{
+					new HourShifter.HourShifter(options, Mock.Of<IFileLoader>(), null);
 				}, Throws.ArgumentNullException);
 			});
 		}
@@ -116,7 +109,7 @@ namespace HourShifterTest
 				.Setup(m => m.LoadImage(It.IsAny<string>()))
 					.ThrowsAsync(new Exception());
 
-			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object);
+			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{
@@ -140,7 +133,7 @@ namespace HourShifterTest
 		{
 			Mock<IFileLoader> mockFileLoader = await createMockFileLoader(sampleDllList);
 
-			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object);
+			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{
@@ -164,7 +157,7 @@ namespace HourShifterTest
 		{
 			Mock<IFileLoader> mockFileLoader = await createMockFileLoader(samplePngList, samplePng);
 
-			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object);
+			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{
@@ -189,7 +182,7 @@ namespace HourShifterTest
 			Mock<IFileLoader> mockFileLoader =
 				await createMockFileLoader(sampleJpgInvalidTimeList, sampleJpgInvalidTime);
 
-			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object);
+			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{
@@ -213,7 +206,7 @@ namespace HourShifterTest
 		{
 			Mock<IFileLoader> mockFileLoader = await createMockFileLoader();
 
-			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object);
+			HourShifter.HourShifter hourShifter = new HourShifter.HourShifter(options, mockFileLoader.Object, Mock.Of<ILogger>());
 
 			Assert.Multiple(() =>
 			{

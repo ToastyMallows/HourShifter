@@ -1,6 +1,14 @@
 {
+	"Assert That": {
+		"prefix": "zat",
+		"body": [
+			"Assert.That($TM_SELECTED_TEXT$0);"
+		],
+		"description": "Insert an Assert.That statement",
+		"scope": "csharp"
+	},
 	"Assert Multiple": {
-		"prefix": "assertm",
+		"prefix": "zam",
 		"body": [
 			"Assert.Multiple(() =>",
 			"{",
@@ -10,15 +18,15 @@
 		"description": "Insert an Assert.Multiple statement",
 		"scope": "csharp"
 	},
-	"Assert That": {
-		"prefix": "assertt",
+	"Assert That Lambda": {
+		"prefix": "zal",
 		"body": [
 			"Assert.That(() =>",
 			"{",
 			"\t$TM_SELECTED_TEXT$0",
 			"}$1);"
 		],
-		"description": "Insert an Assert.That statement",
+		"description": "Insert an Assert.That lambda statement",
 		"scope": "csharp"
 	}
 }

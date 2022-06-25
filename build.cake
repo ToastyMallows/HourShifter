@@ -1,6 +1,6 @@
 #tool nuget:?package=NUnit.ConsoleRunner&version=3.15.0
 #tool nuget:?package=OpenCover&version=4.7.1221
-#tool "nuget:?package=ReportGenerator&version=5.1.9"
+#tool "nuget:?package=ReportGenerator&version=5.0.4"
 #addin nuget:?package=Cake.Coverlet&version=2.5.4
 using System.IO;
 
@@ -29,43 +29,25 @@ Task("Clean")
 
 	DotNetClean(solutionFile, new DotNetCleanSettings{
 		NoLogo = true,
-		Configuration = DEBUG,
-		ArgumentCustomization = (builder) => {
-			if (runtimeIdentifier == windowsRID) {
-				return builder.Append($"/p:RID={runtimeIdentifier}");
-			}
-			else
-			{
-				return builder.Append($"-p:RID={runtimeIdentifier}");
-			}
-		}
+		Configuration = DEBUG
 	});
 
 	DotNetClean(solutionFile, new DotNetCleanSettings{
 		NoLogo = true,
-		Configuration = RELEASE,
-		ArgumentCustomization = (builder) => {
-			if (runtimeIdentifier == windowsRID) {
-				return builder.Append($"/p:RID={runtimeIdentifier}");
-			}
-			else
-			{
-				return builder.Append($"-p:RID={runtimeIdentifier}");
-			}
-		}
+		Configuration = RELEASE
 	});
 
 	if (DirectoryExists(publishFolder))
 	{
 		DeleteDirectory(publishFolder, new DeleteDirectorySettings{
-			Recursive = true,
+			Recursive = true
 		});
 	}
 
 	if (DirectoryExists(coverageFolder))
 	{
 		DeleteDirectory(coverageFolder, new DeleteDirectorySettings{
-			Recursive = true,
+			Recursive = true
 		});
 	}
 });
@@ -73,17 +55,7 @@ Task("Clean")
 Task("Restore")
 	.Does(() => 
 {
-	DotNetRestore(solutionFile, new DotNetRestoreSettings{
-		ArgumentCustomization = (builder) => {
-			if (runtimeIdentifier == windowsRID) {
-				return builder.Append($"/p:RID={runtimeIdentifier}");
-			}
-			else
-			{
-				return builder.Append($"-p:RID={runtimeIdentifier}");
-			}
-		}
-	});
+	DotNetRestore(solutionFile);
 });
 
 Task("Build")
@@ -93,16 +65,7 @@ Task("Build")
 	DotNetBuild(solutionFile, new DotNetBuildSettings{
 		NoLogo = true,
 		NoRestore = true,
-		Configuration = configuration,
-		ArgumentCustomization = (builder) => {
-			if (runtimeIdentifier == windowsRID) {
-				return builder.Append($"/p:RID={runtimeIdentifier}");
-			}
-			else
-			{
-				return builder.Append($"-p:RID={runtimeIdentifier}");
-			}
-		}
+		Configuration = configuration
 	});
 });
 
@@ -123,16 +86,7 @@ Task("Test")
 					NoRestore = true,
 					NoLogo = true,
 					Verbosity = DotNetCoreVerbosity.Normal,
-					Configuration = configuration,
-					ArgumentCustomization = (builder) => {
-						if (runtimeIdentifier == windowsRID) {
-							return builder.Append($"/p:RID={runtimeIdentifier}");
-						}
-						else
-						{
-							return builder.Append($"-p:RID={runtimeIdentifier}");
-						}
-					}
+					Configuration = configuration
 				},
 				new CoverletSettings {
 					CollectCoverage = true,
@@ -168,18 +122,18 @@ Task("Publish")
 	.Does(() =>
 {
 	DotNetPublish(projectFile, new DotNetPublishSettings{
+		NoRestore = true,
+		NoBuild = true,
 		NoLogo = true,
 		Configuration = configuration,
-		ArgumentCustomization = (builder) => {
-			if (runtimeIdentifier == windowsRID) {
-				return builder.Append($"/p:RID={runtimeIdentifier}");
-			}
-			else
-			{
-				return builder.Append($"-p:RID={runtimeIdentifier}");
-			}
-		},
 		OutputDirectory = publishFolder,
+		IncludeAllContentForSelfExtract = true,
+		IncludeNativeLibrariesForSelfExtract = true,
+		PublishReadyToRun = true,
+		PublishReadyToRunShowWarnings = true,
+		PublishSingleFile = true,
+		Runtime = runtimeIdentifier,
+		SelfContained = true
 	});
 });
 Task("Default")
