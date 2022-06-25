@@ -5,7 +5,10 @@
 		<IsPackable>false</IsPackable>
 		<IsTestProject>true</IsTestProject>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<RuntimeIdentifiers>win10-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<ItemGroup>

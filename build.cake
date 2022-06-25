@@ -122,8 +122,6 @@ Task("Publish")
 	.Does(() =>
 {
 	DotNetPublish(projectFile, new DotNetPublishSettings{
-		NoRestore = true,
-		NoBuild = true,
 		NoLogo = true,
 		Configuration = configuration,
 		OutputDirectory = publishFolder,

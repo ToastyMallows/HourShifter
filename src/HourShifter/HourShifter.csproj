@@ -6,11 +6,13 @@
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<IsTestProject>false</IsTestProject>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<RuntimeIdentifiers>win10-x64;linux-x64;osx-x64</RuntimeIdentifiers>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Drawing.Common" Version="6.0.0" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="2.1.2" />
 		<PackageReference Include="CommandLineParser" Version="2.9.1" />
 	</ItemGroup>
