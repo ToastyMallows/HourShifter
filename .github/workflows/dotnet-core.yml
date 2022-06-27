@@ -8,59 +8,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Currently unable to support Unix and MacOS
-        # because of this bug: https://github.com/dotnet/runtime/issues/46411
-        # Uncomment this line when fixed!
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
 
     steps:
       - uses: actions/checkout@v2
   
-      - name: Setup .NET 5
+      - name: Setup .NET 6
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '5.0.302'
-
-      - name: Install libgdiplus
-        if: matrix.os == 'ubuntu-latest'
-        run: sudo apt update && sudo apt install libc6-dev libgdiplus
-
-
-      - name: Restore Windows
-        if: matrix.os == 'windows-latest'
-        run: ./build.ps1 --target=Restore --configuration=Release --rid="win-x64" --exclusive
-      
-      - name: Restore Unix
-        if: matrix.os == 'ubuntu-latest'
-        run: ./build.sh --target=Restore --configuration=Release --rid="linux-x64" --exclusive
-
-      - name: Restore MacOS
-        if: matrix.os == 'macos-latest'
-        run: ./build.sh --target=Restore --configuration=Release --rid="osx-x64" --exclusive
-
-
-      - name: Build Windows
-        if: matrix.os == 'windows-latest'
-        run: ./build.ps1 --target=Build --configuration=Release --rid="win-x64" --exclusive
-      
-      - name: Build Unix
-        if: matrix.os == 'ubuntu-latest'
-        run: ./build.sh --target=Build --configuration=Release --rid="linux-x64" --exclusive
-
-      - name: Build MacOS
-        if: matrix.os == 'macos-latest'
-        run: ./build.sh --target=Build --configuration=Release --rid="osx-x64" --exclusive
-
+          dotnet-version: '6.0.300'
 
       - name: Test Windows
         if: matrix.os == 'windows-latest'
-        run: ./build.ps1 --target=Test --configuration=Release --rid="win-x64" --exclusive
-
+        run: ./build.ps1 --target=Test --configuration=Release 
+      
       - name: Test Unix
         if: matrix.os == 'ubuntu-latest'
-        run: ./build.sh --target=Test --configuration=Release --rid="linux-x64" --exclusive
+        run: ./build.sh --target=Test --configuration=Release
 
       - name: Test MacOS
         if: matrix.os == 'macos-latest'
-        run: ./build.sh --target=Test --configuration=Release --rid="osx-x64" --exclusive
+        run: ./build.sh --target=Test --configuration=Release
